@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3PL Integration - API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .scenario-selector {
+            background: #16213e;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #667eea;
+        }
+
+        .scenario-selector h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .scenario-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #2a2a3e;
+            color: white;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+        }
+
+        .api-section {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .api-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-badge {
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .method-badge.post {
+            background: #2196f3;
+        }
+
+        .method-badge.put {
+            background: #ff9800;
+        }
+
+        .endpoint {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            color: #58a6ff;
+            border: 1px solid #30363d;
+        }
+
+        .code-block {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #30363d;
+        }
+
+        .code-block pre {
+            margin: 0;
+            color: #c9d1d9;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .flow-visualization {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .flow-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .flow-step {
+            flex: 1;
+            min-width: 200px;
+            background: #2a2a3e;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .flow-step.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .flow-step h4 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .flow-step p {
+            font-size: 0.9em;
+            color: #b0b0b0;
+        }
+
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .info-box {
+            background: #1a4d2e;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: #4d3319;
+            border-left: 5px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .warning-box h4 {
+            color: #ff9800;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+        }
+
+        th {
+            background: #2a2a3e;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        td {
+            color: #c9d1d9;
+        }
+
+        .simulation-panel {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border: 2px solid #4caf50;
+        }
+
+        .simulation-panel h3 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        .simulation-log {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 20px 0;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .log-entry.success {
+            color: #4caf50;
+        }
+
+        .log-entry.info {
+            color: #58a6ff;
+        }
+
+        .log-entry.warning {
+            color: #ff9800;
+        }
+
+        @media (max-width: 768px) {
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: auto;
+                top: auto;
+                bottom: -30px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .scenario-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚚 3PL Integration API</h1>
+            <p>Seamless integration with existing delivery partner applications</p>
+        </header>
+
+        <div class="scenario-selector">
+            <h2>📍 Demo Scenario Selector</h2>
+            <p style="margin-bottom: 20px; color: #b0b0b0;">Choose a delivery scenario to see how the API works:</p>
+            <div class="scenario-buttons">
+                <button class="btn btn-primary" onclick="runScenario('failed')">
+                    Scenario 1: Delivery Failed → Hub Recommendation
+                </button>
+                <button class="btn btn-secondary" onclick="runScenario('handover')">
+                    Scenario 2: Two-Phase Hub Handover
+                </button>
+                <button class="btn btn-secondary" onclick="runScenario('rto')">
+                    Scenario 3: RTO Collection
+                </button>
+            </div>
+        </div>
+
+        <!-- Flow Visualization -->
+        <div class="flow-visualization">
+            <h2 style="color: #667eea; margin-bottom: 20px;">🔄 Integration Flow</h2>
+            <div class="flow-steps" id="flowSteps">
+                <div class="flow-step" id="step1">
+                    <h4>1. Delivery Attempt</h4>
+                    <p>Driver marks customer unavailable</p>
+                </div>
+                <div class="flow-step" id="step2">
+                    <h4>2. API Call</h4>
+                    <p>System requests hub recommendation</p>
+                </div>
+                <div class="flow-step" id="step3">
+                    <h4>3. Hub Suggested</h4>
+                    <p>Nearest hub with capacity</p>
+                </div>
+                <div class="flow-step" id="step4">
+                    <h4>4. Navigate</h4>
+                    <p>Driver proceeds to hub</p>
+                </div>
+                <div class="flow-step" id="step5">
+                    <h4>5. Handover</h4>
+                    <p>Two-phase handover at hub</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Documentation -->
+        <div class="api-section">
+            <h3>
+                <span class="method-badge post">POST</span>
+                Get Hub Recommendation
+            </h3>
+            <div class="endpoint">
+                POST https://api.rtohub.com/v1/delivery/hub-recommendation
+            </div>
+
+            <h4 style="color: #667eea; margin-top: 20px;">Request Payload:</h4>
+            <div class="code-block">
+                <pre>{
+  "order_id": "ORD2025001",
+  "awb": "AWB1234567890",
+  "delivery_attempt": 1,
+  "customer_location": {
+    "latitude": 12.9352,
+    "longitude": 77.6245,
+    "pincode": "560034",
+    "address": "Flat 401, Koramangala, Bangalore"
+  },
+  "parcel_details": {
+    "declared_value": 2499,
+    "weight_kg": 0.5,
+    "dimensions": "30x25x5 cm",
+    "payment_type": "COD",
+    "is_fragile": false
+  },
+  "driver_id": "DRV12345",
+  "timestamp": "2025-10-25T14:30:00Z"
+}</pre>
+            </div>
+
+            <h4 style="color: #667eea; margin-top: 20px;">Response Payload:</h4>
+            <div class="code-block">
+                <pre>{
+  "success": true,
+  "hub_recommended": true,
+  "hub_details": {
+    "hub_id": "HUB_KRM_001",
+    "hub_name": "Kumar Kirana Store",
+    "address": "123, 8th Cross Road, Koramangala",
+    "pincode": "560034",
+    "phone": "+91 98765 12345",
+    "location": {
+      "latitude": 12.9366,
+      "longitude": 77.6269
+    },
+    "distance_km": 0.45,
+    "operating_hours": "10:00 AM - 8:00 PM",
+    "current_capacity": 35,
+    "max_capacity": 120,
+    "accepts_cod": true,
+    "accepts_fragile": true
+  },
+  "navigation": {
+    "google_maps_url": "https://maps.google.com/?q=12.9366,77.6269",
+    "estimated_time_minutes": 5
+  },
+  "instructions": [
+    "Navigate to hub using provided location",
+    "Call hub before arrival: +91 98765 12345",
+    "Follow two-phase handover protocol",
+    "Wait for hub inspection and acceptance"
+  ],
+  "sla": {
+    "hub_storage_days": 3,
+    "rto_trigger_date": "2025-10-28T20:00:00Z"
+  }
+}</pre>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>
+                <span class="method-badge post">POST</span>
+                Initiate Hub Handover (Phase 1)
+            </h3>
+            <div class="endpoint">
+                POST https://api.rtohub.com/v1/delivery/hub-arrival
+            </div>
+
+            <h4 style="color: #667eea; margin-top: 20px;">Request Payload:</h4>
+            <div class="code-block">
+                <pre>{
+  "awb": "AWB1234567890",
+  "hub_id": "HUB_KRM_001",
+  "driver_id": "DRV12345",
+  "arrival_time": "2025-10-25T15:00:00Z",
+  "driver_location": {
+    "latitude": 12.9366,
+    "longitude": 77.6269
+  }
+}</pre>
+            </div>
+
+            <h4 style="color: #667eea; margin-top: 20px;">Response:</h4>
+            <div class="code-block">
+                <pre>{
+  "success": true,
+  "handover_id": "HO_20251025_001",
+  "status": "AWAITING_HUB_INSPECTION",
+  "hub_notified": true,
+  "inspection_timeout_minutes": 10,
+  "message": "Hub has been notified. Please wait for inspection."
+}</pre>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h3>
+                <span class="method-badge put">PUT</span>
+                Complete Hub Handover (Phase 2)
+            </h3>
+            <div class="endpoint">
+                PUT https://api.rtohub.com/v1/delivery/hub-handover/{handover_id}
+            </div>
+
+            <div class="info-box">
+                <h4>✅ Important: Two-Phase Handover</h4>
+                <p>Driver can only call this API <strong>after</strong> hub confirms acceptance in their app. This ensures proper inspection and prevents premature liability transfer.</p>
+            </div>
+
+            <h4 style="color: #667eea; margin-top: 20px;">Request Payload:</h4>
+            <div class="code-block">
+                <pre>{
+  "handover_id": "HO_20251025_001",
+  "hub_accepted": true,
+  "handover_photo_url": "https://cdn.example.com/photos/handover_123.jpg",
+  "parcel_condition": "NORMAL",
+  "notes": "Parcel handed over successfully"
+}</pre>
+            </div>
+
+            <h4 style="color: #667eea; margin-top: 20px;">Response:</h4>
+            <div class="code-block">
+                <pre>{
+  "success": true,
+  "status": "HANDOVER_COMPLETE",
+  "liability_transfer": {
+    "from": "3PL_DRIVER",
+    "to": "HUB_PARTNER",
+    "timestamp": "2025-10-25T15:08:00Z"
+  },
+  "customer_notified": true,
+  "pickup_otp": "845672",
+  "next_steps": [
+    "Customer will receive WhatsApp notification",
+    "Hub will handle customer pickup",
+    "RTO will be triggered if not picked up in 3 days"
+  ]
+}</pre>
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Integration Requirements</h4>
+            <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                <li>API authentication via Bearer token (provided during onboarding)</li>
+                <li>HTTPS only - all requests must be encrypted</li>
+                <li>Rate limit: 100 requests/minute per driver</li>
+                <li>Webhook support for real-time updates (hub acceptance, customer pickup)</li>
+                <li>Mandatory fields: AWB, driver_id, location coordinates</li>
+            </ul>
+        </div>
+
+        <!-- Simulation Panel -->
+        <div class="simulation-panel">
+            <h3>🎬 Live Simulation</h3>
+            <p style="color: #b0b0b0; margin-bottom: 20px;">Watch the API calls in action:</p>
+
+            <div class="simulation-log" id="simulationLog">
+                <div class="log-entry info">Waiting for scenario selection...</div>
+            </div>
+
+            <button class="btn btn-primary" onclick="proceedToHub()">
+                Continue to Hub Operations App →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 0;
+
+        function runScenario(type) {
+            const log = document.getElementById('simulationLog');
+            log.innerHTML = '';
+
+            if (type === 'failed') {
+                simulateFailedDelivery();
+            } else if (type === 'handover') {
+                simulateHandover();
+            } else if (type === 'rto') {
+                simulateRTO();
+            }
+        }
+
+        function simulateFailedDelivery() {
+            const log = document.getElementById('simulationLog');
+            const steps = [
+                { msg: '🚚 Driver arrives at delivery location...', type: 'info', delay: 0 },
+                { msg: '🔔 Customer unavailable - marked in driver app', type: 'info', delay: 1000 },
+                { msg: '📡 API Call: POST /v1/delivery/hub-recommendation', type: 'info', delay: 2000 },
+                { msg: '✅ Response: Hub recommended - Kumar Kirana Store (450m away)', type: 'success', delay: 3000 },
+                { msg: '📍 Navigation initiated to hub location', type: 'info', delay: 4000 },
+                { msg: '🗺️ ETA: 5 minutes | Distance: 0.45 km', type: 'info', delay: 5000 },
+                { msg: '✅ Scenario Complete: Driver proceeding to hub', type: 'success', delay: 6000 }
+            ];
+
+            animateSteps(steps, log);
+        }
+
+        function simulateHandover() {
+            const log = document.getElementById('simulationLog');
+            const steps = [
+                { msg: '🚚 Driver arrived at hub location', type: 'info', delay: 0 },
+                { msg: '📡 API Call: POST /v1/delivery/hub-arrival', type: 'info', delay: 1000 },
+                { msg: '✅ Response: Hub notified - Awaiting inspection', type: 'success', delay: 2000 },
+                { msg: '⏱️ 10-minute inspection timer started', type: 'warning', delay: 3000 },
+                { msg: '👁️ Hub inspecting parcel...', type: 'info', delay: 4000 },
+                { msg: '📸 Hub captured photos and applied tags', type: 'info', delay: 5500 },
+                { msg: '✅ Hub accepted parcel in their app', type: 'success', delay: 7000 },
+                { msg: '📡 API Call: PUT /v1/delivery/hub-handover/{id}', type: 'info', delay: 8000 },
+                { msg: '✅ Response: Handover complete - Liability transferred', type: 'success', delay: 9000 },
+                { msg: '📲 Customer notification sent with OTP: 845672', type: 'success', delay: 10000 },
+                { msg: '✅ Scenario Complete: Parcel secured at hub', type: 'success', delay: 11000 }
+            ];
+
+            animateSteps(steps, log);
+        }
+
+        function simulateRTO() {
+            const log = document.getElementById('simulationLog');
+            const steps = [
+                { msg: '⏰ 72 hours elapsed - No customer pickup', type: 'warning', delay: 0 },
+                { msg: '🔄 System auto-tagged parcel as RTO Pending', type: 'info', delay: 1000 },
+                { msg: '📞 Hub notified to segregate for RTO collection', type: 'info', delay: 2000 },
+                { msg: '🚚 3PL driver dispatched for daily RTO collection', type: 'info', delay: 3000 },
+                { msg: '📡 API Call: GET /v1/rto/collection-list', type: 'info', delay: 4000 },
+                { msg: '✅ Response: 1 RTO parcel ready at Kumar Kirana Store', type: 'success', delay: 5000 },
+                { msg: '📦 Driver collected RTO parcel - Hub earns ₹5', type: 'success', delay: 6000 },
+                { msg: '✅ Scenario Complete: RTO initiated back to seller', type: 'success', delay: 7000 }
+            ];
+
+            animateSteps(steps, log);
+        }
+
+        function animateSteps(steps, logElement) {
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    const entry = document.createElement('div');
+                    entry.className = `log-entry ${step.type}`;
+                    entry.textContent = step.msg;
+                    logElement.appendChild(entry);
+                    logElement.scrollTop = logElement.scrollHeight;
+
+                    // Highlight current flow step
+                    highlightFlowStep(index + 1);
+                }, step.delay);
+            });
+        }
+
+        function highlightFlowStep(step) {
+            // Remove all active classes
+            document.querySelectorAll('.flow-step').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Add active to current step
+            const currentStepEl = document.getElementById(`step${Math.min(step, 5)}`);
+            if (currentStepEl) {
+                currentStepEl.classList.add('active');
+            }
+        }
+
+        function proceedToHub() {
+            window.open('hub-operations.html', '_blank');
+        }
+
+        // Initialize
+        console.log('🚚 3PL Integration Demo Loaded');
+    </script>
+</body>
+</html>

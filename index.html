@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTO Prevention Hub - Interactive Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .demo-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .demo-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+        }
+
+        .demo-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .demo-card .features {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .demo-card .features li {
+            padding: 8px 0;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .demo-card .features li:before {
+            content: "✓ ";
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .flow-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .flow-section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .flow-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .flow-step .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .flow-step h3 {
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .flow-step p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .flow-step:not(:last-child):after {
+            content: "→";
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .info-banner h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .info-banner p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flow-step:not(:last-child):after {
+                content: "↓";
+                right: auto;
+                top: auto;
+                bottom: -30px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 RTO Prevention Hub</h1>
+            <p>Interactive Demo - Complete Ecosystem Prototype</p>
+        </header>
+
+        <div class="flow-section">
+            <h2>📍 Customer Journey Flow</h2>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <h3>Checkout</h3>
+                    <p>Customer opts-in for hub delivery</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <h3>Failed Delivery</h3>
+                    <p>3PL gets hub recommendation</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <h3>Hub Drop</h3>
+                    <p>Driver delivers to hub</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <h3>Inspection</h3>
+                    <p>Hub accepts parcel</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">5</div>
+                    <h3>Notification</h3>
+                    <p>Customer gets OTP</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">6</div>
+                    <h3>Pickup</h3>
+                    <p>Customer collects parcel</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-banner">
+            <h3>🚀 Investor-Ready Prototype</h3>
+            <p>Click on any component below to explore the interactive demo</p>
+        </div>
+
+        <div class="demo-grid">
+            <!-- Customer Checkout -->
+            <div class="demo-card" onclick="window.open('customer-checkout.html', '_blank')">
+                <div class="icon">🛒</div>
+                <h2>Customer Checkout</h2>
+                <p>Ecommerce integration showing hub opt-in at checkout</p>
+                <ul class="features">
+                    <li>Hub consent capture</li>
+                    <li>Nearest hub suggestion</li>
+                    <li>Order placement</li>
+                </ul>
+                <button class="btn">Launch Demo →</button>
+            </div>
+
+            <!-- 3PL Integration -->
+            <div class="demo-card" onclick="window.open('3pl-integration.html', '_blank')">
+                <div class="icon">🚚</div>
+                <h2>3PL Integration</h2>
+                <p>API/webhook integration for driver app</p>
+                <ul class="features">
+                    <li>Hub recommendation API</li>
+                    <li>Delivery attempt tracking</li>
+                    <li>Two-phase handover flow</li>
+                </ul>
+                <button class="btn">View Integration →</button>
+            </div>
+
+            <!-- Hub Operations App -->
+            <div class="demo-card" onclick="window.open('hub-operations.html', '_blank')">
+                <div class="icon">🏪</div>
+                <h2>Hub Operations App</h2>
+                <p>Complete hub partner operations interface</p>
+                <ul class="features">
+                    <li>Parcel receiving & inspection</li>
+                    <li>Storage management</li>
+                    <li>Customer handover with OTP</li>
+                    <li>COD cash management</li>
+                </ul>
+                <button class="btn">Launch App →</button>
+            </div>
+
+            <!-- Hub Performance Dashboard -->
+            <div class="demo-card" onclick="window.open('hub-dashboard.html', '_blank')">
+                <div class="icon">📊</div>
+                <h2>Hub Performance Dashboard</h2>
+                <p>Hub owner's performance tracking & analytics</p>
+                <ul class="features">
+                    <li>Performance Score (100 points)</li>
+                    <li>5 Key Metrics tracking</li>
+                    <li>Earnings & payment history</li>
+                    <li>Performance tier status</li>
+                </ul>
+                <button class="btn">View Dashboard →</button>
+            </div>
+
+            <!-- Customer Pickup -->
+            <div class="demo-card" onclick="window.open('customer-pickup.html', '_blank')">
+                <div class="icon">📱</div>
+                <h2>Customer Pickup</h2>
+                <p>Customer notification & pickup interface</p>
+                <ul class="features">
+                    <li>WhatsApp-style notification</li>
+                    <li>Hub location & directions</li>
+                    <li>OTP verification</li>
+                </ul>
+                <button class="btn">Launch Interface →</button>
+            </div>
+
+            <!-- Platform Dashboard -->
+            <div class="demo-card" onclick="window.open('platform-dashboard.html', '_blank')">
+                <div class="icon">🎛️</div>
+                <h2>Platform Dashboard</h2>
+                <p>Central monitoring for all operations</p>
+                <ul class="features">
+                    <li>Real-time order tracking</li>
+                    <li>Hub network monitoring</li>
+                    <li>Analytics & insights</li>
+                    <li>Exception management</li>
+                </ul>
+                <button class="btn">View Dashboard →</button>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.3em; font-weight: bold;">RTO Prevention Hub - Interactive Prototype</p>
+            <p style="margin-top: 10px;">Built for investor presentations and product demonstrations</p>
+            <p style="margin-top: 20px; opacity: 0.8;">© 2025 RTO Prevention Platform</p>
+        </footer>
+    </div>
+
+    <script>
+        // Track demo interactions
+        console.log('🎯 RTO Prevention Hub Demo Loaded');
+        console.log('📍 All components ready for demonstration');
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

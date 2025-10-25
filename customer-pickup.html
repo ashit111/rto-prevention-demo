@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcel Ready for Pickup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .mobile-frame {
+            max-width: 420px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            border: 10px solid #1a1a1a;
+        }
+
+        .status-bar {
+            background: #25D366;
+            color: white;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8em;
+        }
+
+        .whatsapp-header {
+            background: #075E54;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .business-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .business-info h3 {
+            font-size: 1.1em;
+            margin-bottom: 3px;
+        }
+
+        .business-info p {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+
+        .chat-container {
+            background: #E5DDD5 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%23E5DDD5" width="100" height="100"/><path d="M0 0L100 100M100 0L0 100" stroke="%23D1C4B8" stroke-width="0.5" opacity="0.3"/></svg>');
+            padding: 20px;
+            min-height: 600px;
+        }
+
+        .message-bubble {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            max-width: 85%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .notification-card h2 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .hub-details {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-icon {
+            font-size: 1.2em;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .otp-box {
+            background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .otp-label {
+            font-size: 0.9em;
+            opacity: 0.95;
+            margin-bottom: 8px;
+        }
+
+        .otp-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .parcel-photo {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4em;
+        }
+
+        .map-preview {
+            width: 100%;
+            height: 150px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 3em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-preview:after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #f44336;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            top: 50%;
+            left: 50%;
+            margin-left: -15px;
+            margin-top: -30px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .btn-primary {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #075E54;
+            color: white;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .benefits-list li {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .benefits-list li:last-child {
+            border-bottom: none;
+        }
+
+        .reminder-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .reminder-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .reminder-box p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .timestamp {
+            font-size: 0.75em;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-frame">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 ⚡ 100%</span>
+        </div>
+
+        <!-- WhatsApp-style Header -->
+        <div class="whatsapp-header">
+            <div class="business-avatar">🏪</div>
+            <div class="business-info">
+                <h3>RTO Hub Delivery</h3>
+                <p>Verified Business</p>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Notification Message -->
+            <div class="message-bubble">
+                <div class="notification-card">
+                    <h2>🎉 Your Parcel Has Arrived!</h2>
+                    <p style="margin-top: 8px; opacity: 0.95;">
+                        Your order is ready for pickup at a nearby hub
+                    </p>
+                </div>
+
+                <!-- Order Details -->
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                    <strong style="color: #667eea; display: block; margin-bottom: 10px;">📦 Order Details</strong>
+                    <div class="detail-row" style="border: none; padding: 5px 0;">
+                        <span style="color: #666;">Order ID:</span>
+                        <strong style="margin-left: auto;">#ORD2025001</strong>
+                    </div>
+                    <div class="detail-row" style="border: none; padding: 5px 0;">
+                        <span style="color: #666;">AWB:</span>
+                        <strong style="margin-left: auto; font-family: 'Courier New', monospace;">AWB1234567890</strong>
+                    </div>
+                    <div class="detail-row" style="border: none; padding: 5px 0;">
+                        <span style="color: #666;">Product:</span>
+                        <strong style="margin-left: auto;">Premium Cotton T-Shirt</strong>
+                    </div>
+                </div>
+
+                <!-- Hub Information -->
+                <div class="hub-details">
+                    <strong style="color: #667eea; display: block; margin-bottom: 15px; font-size: 1.1em;">🏪 Pickup Location</strong>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">📍</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Hub Name</div>
+                            <div class="detail-value">Kumar Kirana Store</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">🗺️</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Address</div>
+                            <div class="detail-value">123, 8th Cross Road, Koramangala<br>Bangalore - 560034</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">📞</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Contact</div>
+                            <div class="detail-value">+91 98765 12345</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">⏰</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Timing</div>
+                            <div class="detail-value">10:00 AM - 8:00 PM (Daily)</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">🚶</div>
+                        <div class="detail-content">
+                            <div class="detail-label">Distance</div>
+                            <div class="detail-value">450 meters away (~5 min walk)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Preview -->
+                <div class="map-preview">
+                    🗺️
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openMaps()">
+                        📍 Get Directions
+                    </button>
+                    <button class="btn btn-secondary" onclick="callHub()">
+                        📞 Call Hub
+                    </button>
+                </div>
+
+                <!-- OTP Box -->
+                <div class="otp-box">
+                    <div class="otp-label">Your Pickup OTP</div>
+                    <div class="otp-value">845672</div>
+                    <p style="font-size: 0.85em; margin-top: 10px; opacity: 0.95;">
+                        Show this OTP at the hub to collect your parcel
+                    </p>
+                </div>
+
+                <!-- Parcel Photo -->
+                <div class="parcel-photo">
+                    📦
+                </div>
+                <p style="text-align: center; color: #666; font-size: 0.85em; margin-top: -10px;">
+                    Your parcel in secure storage
+                </p>
+
+                <!-- Benefits -->
+                <div style="background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%); color: white; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                    <strong style="display: block; margin-bottom: 12px; font-size: 1.1em;">✅ Benefits of Hub Pickup</strong>
+                    <ul class="benefits-list">
+                        <li>✓ Pick up at your convenience (no waiting at home)</li>
+                        <li>✓ Secure storage with CCTV monitoring</li>
+                        <li>✓ Friendly local store owner</li>
+                        <li>✓ Available 10am-8pm daily</li>
+                    </ul>
+                </div>
+
+                <!-- Important Reminder -->
+                <div class="reminder-box">
+                    <strong>⏰ Important Reminder</strong>
+                    <p>
+                        Please pick up your parcel within <strong>3 days (72 hours)</strong> to avoid return to seller.
+                    </p>
+                    <p style="margin-top: 8px;">
+                        <strong>Pickup Deadline:</strong> 28 October 2025, 8:00 PM
+                    </p>
+                </div>
+
+                <!-- What to Bring -->
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin: 15px 0;">
+                    <strong style="color: #1976d2; display: block; margin-bottom: 10px;">📋 What to Bring</strong>
+                    <div style="color: #666; font-size: 0.9em; line-height: 1.8;">
+                        <div>✓ This OTP: <strong style="color: #333;">845672</strong></div>
+                        <div>✓ ID Proof (for COD >₹5,000 or high-value items)</div>
+                        <div>✓ COD Amount: <strong style="color: #4caf50;">₹2,499</strong> (Cash or UPI accepted)</div>
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; margin: 15px 0;">
+                    <div style="font-size: 1.5em; margin-bottom: 10px;">🎯</div>
+                    <strong style="font-size: 1.1em; display: block; margin-bottom: 8px;">Ready to Pickup?</strong>
+                    <p style="font-size: 0.9em; opacity: 0.95; margin-bottom: 15px;">
+                        Visit Kumar Kirana Store anytime between 10am-8pm
+                    </p>
+                    <button class="btn btn-primary" style="width: 100%;" onclick="openMaps()">
+                        📍 Navigate to Hub Now
+                    </button>
+                </div>
+
+                <div class="timestamp">
+                    Delivered 2:30 PM
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openMaps() {
+            // Simulate opening maps
+            alert('🗺️ Opening Google Maps...\n\nNavigating to:\nKumar Kirana Store\n123, 8th Cross Road, Koramangala\nBangalore - 560034\n\n📍 ETA: 5 minutes (~450m)');
+        }
+
+        function callHub() {
+            // Simulate calling hub
+            alert('📞 Calling Kumar Kirana Store...\n\n+91 98765 12345\n\nHub contact for any queries about your parcel pickup.');
+        }
+
+        console.log('📱 Customer Pickup Interface Loaded');
+    </script>
+</body>
+</html>

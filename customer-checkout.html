@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Ecommerce Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .cart-info {
+            color: #666;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        .checkout-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .hub-opt-in {
+            background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 2px solid #667eea;
+        }
+
+        .hub-opt-in h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hub-opt-in p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .hub-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .hub-details.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hub-card {
+            border: 2px solid #4caf50;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e8f5e9;
+        }
+
+        .hub-card h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .hub-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            color: #555;
+        }
+
+        .hub-info span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .benefit-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .benefit-list li {
+            padding: 8px 0;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .benefit-list li:before {
+            content: "✓";
+            font-weight: bold;
+            color: #4caf50;
+        }
+
+        .order-summary {
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .summary-item.total {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            border-top: 2px solid #333;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content .icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content h2 {
+            color: #4caf50;
+            margin-bottom: 15px;
+            border: none;
+        }
+
+        .modal-content p {
+            color: #666;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .order-id {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🛒 ShopNow</div>
+            <div class="cart-info">Cart (1 item) | ₹2,499</div>
+        </header>
+
+        <div class="checkout-container">
+            <div class="checkout-section">
+                <h2>📍 Delivery Information</h2>
+
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" value="Rajesh Kumar" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" value="+91 98765 43210" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" value="rajesh.kumar@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Delivery Address *</label>
+                    <textarea id="address" rows="3" required>Flat 401, Sunshine Apartments
+MG Road, Koramangala
+Bangalore - 560034</textarea>
+                </div>
+
+                <!-- Hub Opt-in Section -->
+                <div class="hub-opt-in">
+                    <h3>🏪 Smart Delivery Option</h3>
+                    <p><strong>Not available during delivery?</strong> We'll hold your parcel at a nearby trusted store (hub) so you can pick it up at your convenience!</p>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="hubOptIn" onchange="toggleHubDetails()">
+                        <label for="hubOptIn">
+                            <strong>Yes, redirect to nearby hub if I'm unavailable</strong><br>
+                            <span style="font-size: 0.9em; color: #666;">No extra charges • Pick up anytime • Secure storage</span>
+                        </label>
+                    </div>
+
+                    <div class="hub-details" id="hubDetails">
+                        <div class="hub-card">
+                            <h4>📍 Recommended Hub Near You</h4>
+                            <div class="hub-info">
+                                <span><strong>🏪 Name:</strong> Kumar Kirana Store</span>
+                                <span><strong>📍 Location:</strong> 123, 8th Cross Road, Koramangala (450m away)</span>
+                                <span><strong>⏰ Hours:</strong> 10am - 8pm daily</span>
+                                <span><strong>📞 Contact:</strong> +91 98765 12345</span>
+                            </div>
+                            <ul class="benefit-list">
+                                <li>Pick up within 3 days at your convenience</li>
+                                <li>OTP-based secure handover</li>
+                                <li>Real-time notifications when parcel arrives</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="placeOrder()">
+                    Place Order - ₹2,499
+                </button>
+            </div>
+
+            <div class="checkout-section order-summary">
+                <h2>📦 Order Summary</h2>
+
+                <div style="margin: 20px 0;">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect fill='%23667eea' width='100' height='100'/%3E%3Ctext x='50' y='50' font-size='40' text-anchor='middle' dy='.3em' fill='white'%3E👕%3C/text%3E%3C/svg%3E" alt="Product" style="width: 100%; border-radius: 8px;">
+                    <div style="margin-top: 15px;">
+                        <strong>Premium Cotton T-Shirt</strong><br>
+                        <span style="color: #666;">Size: L | Color: Blue</span>
+                    </div>
+                </div>
+
+                <div class="summary-item">
+                    <span>Subtotal</span>
+                    <span>₹2,499</span>
+                </div>
+                <div class="summary-item">
+                    <span>Shipping</span>
+                    <span style="color: #4caf50;">FREE</span>
+                </div>
+                <div class="summary-item">
+                    <span>Hub Service</span>
+                    <span style="color: #4caf50;">FREE</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total</span>
+                    <span>₹2,499</span>
+                </div>
+
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                    <strong style="color: #1976d2;">💡 Pro Tip</strong>
+                    <p style="font-size: 0.9em; color: #555; margin-top: 8px;">
+                        Enable hub delivery to never miss a delivery again! Perfect for busy professionals.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="icon">✅</div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for your order, Rajesh!</p>
+
+            <div class="order-id">
+                Order ID: #ORD2025001
+            </div>
+
+            <div id="hubEnabledMessage" style="display: none; background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                <h3 style="color: #2e7d32; margin-bottom: 10px;">🏪 Hub Delivery Enabled</h3>
+                <p style="color: #555;">If you're unavailable during delivery, we'll automatically redirect your parcel to <strong>Kumar Kirana Store</strong>. You'll receive a notification with pickup details!</p>
+            </div>
+
+            <button class="btn-primary" onclick="simulateDelivery()" style="margin-top: 20px;">
+                Continue to Delivery Simulation →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleHubDetails() {
+            const checkbox = document.getElementById('hubOptIn');
+            const details = document.getElementById('hubDetails');
+
+            if (checkbox.checked) {
+                details.classList.add('active');
+            } else {
+                details.classList.remove('active');
+            }
+        }
+
+        function placeOrder() {
+            const hubOptIn = document.getElementById('hubOptIn').checked;
+            const modal = document.getElementById('successModal');
+            const hubMessage = document.getElementById('hubEnabledMessage');
+
+            // Store order data in localStorage for next pages
+            const orderData = {
+                orderId: 'ORD2025001',
+                awb: 'AWB1234567890',
+                customerName: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                hubOptIn: hubOptIn,
+                hubName: 'Kumar Kirana Store',
+                hubAddress: '123, 8th Cross Road, Koramangala',
+                hubPhone: '+91 98765 12345',
+                productName: 'Premium Cotton T-Shirt',
+                amount: 2499,
+                paymentType: 'COD',
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem('demoOrder', JSON.stringify(orderData));
+
+            if (hubOptIn) {
+                hubMessage.style.display = 'block';
+            } else {
+                hubMessage.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function simulateDelivery() {
+            // Open 3PL integration page
+            window.open('3pl-integration.html', '_blank');
+        }
+
+        // Pre-populate for demo
+        window.onload = function() {
+            console.log('✅ Customer Checkout Demo Loaded');
+        };
+    </script>
+</body>
+</html>
